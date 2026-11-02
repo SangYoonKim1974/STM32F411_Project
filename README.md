@@ -1,7 +1,4 @@
 # STM32F411_Project
-STM32F411_Project
-<<<<<<< HEAD
-=======
 
 # H1 제목
 ## H2 제목  
