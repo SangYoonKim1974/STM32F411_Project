@@ -36,3 +36,15 @@ http://www.naver.com
 
 `console.log('Hello World')`
 
+```javascript
+function hello() {
+    console.log('Hello World');
+}
+```
+```python
+def hello():
+    print("Hello World")
+```
+```bash
+npm install package-name
+```
