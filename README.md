@@ -72,7 +72,7 @@ def hello():
 
 ## Hardware
 
-![STM32F411_블럭도]슬라이드1<br>
+![슬라이드1.PNG](img/슬라이드1.PNG)<br> "블록도"
 
 ## Software
 
