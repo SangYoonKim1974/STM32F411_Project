@@ -67,3 +67,12 @@ def hello():
 ---
 
 #Chapter2
+
+# STM32F411_Project
+
+## Hardware
+
+![STM32F411_블럭도]슬라이드1<br>
+
+## Software
+
