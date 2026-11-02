@@ -71,8 +71,28 @@ def hello():
 # STM32F411_Project
 
 ## Hardware
-
+---
 ![슬라이드1.PNG](img/슬라이드1.PNG)<br> "블록도"
 
 ## Software
+---
 
+<p align="center">
+  <img src="img/슬라이드1.PNG">
+</p>
+
+<p align="center">
+  <img src="img/슬라이드1.PNG" width="80%">
+</p>
+
+<p align="center">
+  <img src="img/슬라이드1.PNG" width="200">
+</p>
+
+<p align="center">
+  <img src="img/슬라이드1.PNG" height="20%">
+</p>
+
+<p align="center">
+  <img src="img/슬라이드1.PNG" width="200">
+</p>
