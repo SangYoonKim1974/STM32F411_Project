@@ -73,6 +73,7 @@ def hello():
 ## Hardware
 ---
 ![슬라이드1.PNG](img/슬라이드1.PNG)<br> "블록도"
+![슬라이드1.PNG](img/슬라이드1.PNG)<br> "QR코드"
 
 ## Software
 ---
