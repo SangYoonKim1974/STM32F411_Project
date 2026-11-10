@@ -11,7 +11,7 @@
 ![이미지추가](img/gerber_pcb.PNG)<br> "거버파일"
 
 #### - 3D배치
-![이미지추가](img/gerber_pcb.PNG)<br> "3D배치"
+![이미지추가](img/3dboard.PNG)<br> "3D배치"
 
 ### STM32F411MX
 #### - RCC 설정
