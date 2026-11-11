@@ -93,5 +93,5 @@ USART 주변 장치는 내부 16 MHz 오실레이터(HSI) 주파수에서 작동
 <img src="./../img/009-1.png" width="85%"> <br>
 <img src="./../img/010-1.png" width="85%"> <br>
 <img src="./../img/011-1.png" width="85%"> <br>
-</details>
+
 [⬅️ 메인 README.md로 돌아가기](../README.md)
