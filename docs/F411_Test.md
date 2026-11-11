@@ -97,7 +97,7 @@ SFR: 저장 공간이긴 한데, 이 공간에 값을 쓰거나 읽는 행위 �
 #### 오실로스코프로 측정한 결과
 | **LED On 결과** | **LED Off 결과** |
 | :---: | :---: |
-| ![LED On](./img/Pin5_asc.JPG) | ![LED Off](./img/Pin5_desc.JPG) |
+| ![LED On](./../img/Pin5_asc.JPG) | ![LED Off](./../img/Pin5_desc.JPG) |
 
 ## 🎬 상황 설정: "지금 당장 불을 켜라!" (LED 제어 명령)
 
