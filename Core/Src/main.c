@@ -90,6 +90,7 @@ int main(void)
   MX_GPIO_Init();
   MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
+  int counter =0;
 
   /* USER CODE END 2 */
 
@@ -97,6 +98,7 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+	  counter++;
 	  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, 1);
 	  HAL_Delay(1000);
 	  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, 0);
