@@ -405,9 +405,9 @@ SFR: 저장 공간이긴 한데, 이 공간에 값을 쓰거나 읽는 행위 �
 * 동작 흐름: CPU가 Core Register를 이용해 계산하고 명령을 내려 SFR의 값을 바꾸면, 그에 따라 핀의 물리적 상태가 변합니다.
 
 #### 오실로스코프로 측정한 결과
-| ![LED On](./img/Pin5_asc.JPG) | ![LED Off](./img/Pin5_desc.JPG) |
-| :---: | :---: |
 | **LED On 결과** | **LED Off 결과** |
+| :---: | :---: |
+| ![LED On](./img/Pin5_asc.JPG) | ![LED Off](./img/Pin5_desc.JPG) |
 
 ---
 
