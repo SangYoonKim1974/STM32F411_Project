@@ -31,7 +31,7 @@
 - [2. MemoryMap](#2-memorymap)
 - [3. Test](#1-test)
 
-## 1.Architecture
+## 1. Architecture
 <details>
 <summary>F411</summary>
 	
@@ -84,7 +84,7 @@ APB1 및 APB2의 최대 동작 주파수에 대한 자세한 내용은 해당 �
 <img src="./img/arm-arch-1.png"> <br>
 </details>
 
-## 2.MemoryMap
+## 2. MemoryMap
 <details>
 <summary>F411</summary>
 
