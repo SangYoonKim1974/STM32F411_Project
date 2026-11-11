@@ -406,8 +406,7 @@ SFR: 저장 공간이긴 한데, 이 공간에 값을 쓰거나 읽는 행위 �
 
 #### 오실로스코프로 측정한 결과
 <p align="center">
-  <img src="./img/Pin5_asc.JPG" width="50%">
-  <img src="./img/Pin5_desc.JPG" width="50%">
+  <img src="./img/Pin5_asc.JPG" width="50%"><img src="./img/Pin5_desc.JPG" width="50%">
 </p>
 
 ---
