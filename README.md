@@ -28,28 +28,8 @@
 ## Hardware
 ---
 ![이미지추가](img/슬라이드1.PNG)<br> "블록도"
-![QR생성](img/qrs.zip)<br> "QR코드"
+![QR생성](img/githubURLSangYoonKim1974.png)<br> "QR코드"
 
 ## Software
 ---
-
-<p align="center">
-  <img src="img/슬라이드1.PNG">
-</p>
-
-<p align="center">
-  <img src="img/슬라이드1.PNG" width="80%">
-</p>
-
-<p align="center">
-  <img src="img/슬라이드1.PNG" width="200">
-</p>
-
-<p align="center">
-  <img src="img/슬라이드1.PNG" height="20%">
-</p>
-
-<p align="center">
-  <img src="img/슬라이드1.PNG" width="200">
-</p>
 
