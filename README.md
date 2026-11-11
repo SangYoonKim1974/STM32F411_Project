@@ -29,7 +29,7 @@
 ## Table of Contents
 - [1. Architecture](#1-architecture)
 - [2. MemoryMap](#2-memorymap)
-- [3. Test](#1-test)
+- [3. GPIO](#3-GPIO)
 
 ## 1. Architecture
 <details>
@@ -300,7 +300,7 @@ I/O 포트가 아날로그 구성으로 설정된 경우:
 ## Table of Contents
 - [1. Test](#1-Test)
    
-## 1.Test (F411)
+## 1. Test (F411)
 <details>
 <summary>F411</summary>
 
