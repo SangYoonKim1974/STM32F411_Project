@@ -80,6 +80,7 @@ APB1 및 APB2의 최대 동작 주파수에 대한 자세한 내용은 해당 �
    
 <img src="./img/arm-arch-1.png"> <br>
 </details>
+
 ## 2.MemoryMap
 <details>
 <summary>F411</summary>
@@ -178,7 +179,8 @@ USART 주변 장치는 내부 16 MHz 오실레이터(HSI) 주파수에서 작동
 <img src="./img/010-1.png" width="85%"> <br>
 <img src="./img/011-1.png" width="85%"> <br>
 </details>
-## 4. GPIO
+
+## 3. GPIO
 <details>
 <summary>F411</summary>
    
@@ -291,7 +293,7 @@ I/O 포트가 아날로그 구성으로 설정된 경우:
 
 ## Software
 ---
-## 3.Test (F411)
+## 1.Test (F411)
 <details>
 <summary>F411</summary>
 
