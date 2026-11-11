@@ -23,11 +23,13 @@
 #### - STM32F411IDE 설정
 ![이미지추가](img/STM32F411IDEsettings.png)<br>
 
-## GPIO
+---
+
+# GPIO
 ## Table of Contents
 - [1. Architecture](#1-architecture)
 - [2. MemoryMap](#2-memorymap)
-- [3. Test](#4-test)
+- [3. Test](#1-test)
 
 ## 1.Architecture
 <details>
@@ -293,6 +295,10 @@ I/O 포트가 아날로그 구성으로 설정된 경우:
 
 ## Software
 ---
+
+## Table of Contents
+- [1. Test](#1-Test)
+   
 ## 1.Test (F411)
 <details>
 <summary>F411</summary>
@@ -590,6 +596,7 @@ SFR: 저장 공간이긴 한데, 이 공간에 값을 쓰거나 읽는 행위 �
 404       }
 
 를 콜하는건가?
+
 ```
 
 2. HAL_Delay 함수 내부의 핵심 동작 (1초 대기)
@@ -602,8 +609,6 @@ SFR: 저장 공간이긴 한데, 이 공간에 값을 쓰거나 읽는 행위 �
 
 * 반복문 대기 (while):
 	* 0x8000a18 ~ 0x8000a26: 끊임없이 현재 시간을 다시 가져와서(HAL_GetTick()), (현재 시간 - 시작 시간) < 1000 조건을 만족할 때까지 계속 제자리에서 돌며(bhi.n) 시간을 떼웁니다. 1초가 지나면 이 루프를 빠져나와 함수가 종료(bx lr)됩니다.
-
-
 
 ---
 
@@ -636,6 +641,31 @@ SFR: 저장 공간이긴 한데, 이 공간에 값을 쓰거나 읽는 행위 �
 
 </details>
 
+### GPIOA 포트에서 PIN6으로 설정하여 테스트 하기
+
+#### 1.	Add Watch Expression 을 통해서 "GPIOA"을 추가한다.
+```
+	설정값을 변경하여 테스트를 진행하도록 합니다.
+    조건 : 소스코드
+	  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, 1);
+	  HAL_Delay(1000);
+	  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, 0);
+	  HAL_Delay(1000);
+	으로 변경한 이후
+
+    Add Watch Expression 을 통해서
+    Expression             ...           Value      
+       GPIOA
+          MODER                         0xa80010a0
+                          ...
+          ODR             ...           40 [LED On 조건], 0 [LED off 조건] 
+                          ...          
+```
+#### 오실로스코프 결과 보기
+   1. LED on 조건
+<img src="./img/F411_R_010.png"> <br>
+   2. LED off 조건
+<img src="./img/F411_R_010.png"> <br>
 
 
 
