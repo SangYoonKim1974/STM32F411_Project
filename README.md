@@ -664,9 +664,9 @@ SFR: 저장 공간이긴 한데, 이 공간에 값을 쓰거나 읽는 행위 �
 ```
 #### 오실로스코프 결과 보기
    1. LED on 조건
-<img src="./img/F411_R_010.png"> <br>
+<img src="./img/Pin6_asc_01.JPG"> <br>
    2. LED off 조건
-<img src="./img/F411_R_010.png"> <br>
+<img src="./img/Pin6_desc_01.JPG"> <br>
 
 
 
