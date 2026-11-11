@@ -35,8 +35,6 @@
 ## 1. Architecture
 <details>
 <summary>F411</summary>
-
-<a name="f411-arch"></a>
 	
 #### 메모리 및 버스 아키텍처
 
