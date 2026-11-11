@@ -26,6 +26,7 @@
 ---
 
 # GPIO
+
 ## Table of Contents
 - [1. Architecture](#1-architecture)
 - [2. MemoryMap](#2-memorymap)
@@ -34,7 +35,8 @@
 ## 1. Architecture
 <details>
 <summary>F411</summary>
-	
+
+<div id="f411-arch"></div>
 #### 메모리 및 버스 아키텍처
 
 ##### 시스템 아키텍처
@@ -82,6 +84,7 @@ APB1 및 APB2의 최대 동작 주파수에 대한 자세한 내용은 해당 �
 참고: APB 레지스터에 대해 16비트 또는 8비트 액세스를 수행하면, 해당 액세스는 32비트 액세스로 변환됩니다. 즉, 브리지가 16비트 또는 8비트 데이터를 복제하여 32비트 벡터를 구성합니다.
    
 <img src="./img/arm-arch-1.png"> <br>
+</div>
 </details>
 
 ## 2. MemoryMap
