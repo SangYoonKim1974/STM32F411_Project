@@ -27,15 +27,14 @@
 
 # GPIO
 
-## Table of Contents
+### Table of Contents
 - [1. Architecture](./docs/F411_Architecture.md)
 - [2. MemoryMap](./docs/F411_MemoryMap.md)
 - [3. GPIO](../docs/F411_Gpio.md)
 
 ## Software
----
 
-## Table of Contents
+### Table of Contents
 - [1. Test](./docs/F411_Test.md)
    
 ### GPIOA 포트에서 PIN6으로 설정하여 테스트 하기
