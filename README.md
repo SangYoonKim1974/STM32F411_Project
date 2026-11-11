@@ -28,7 +28,7 @@
 # GPIO
 
 ## Table of Contents
-- [1. Architecture](#1-architecture)
+- [1. Architecture](#f411-arch)
 - [2. MemoryMap](#2-memorymap)
 - [3. GPIO](#3-GPIO)
 
