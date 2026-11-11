@@ -404,6 +404,12 @@ SFR: 저장 공간이긴 한데, 이 공간에 값을 쓰거나 읽는 행위 �
 * SFR (앞서 이야기한 MODER, ODR 등): CPU가 주변장치(LED가 연결된 GPIO 핀 등)를 제어하기 위해 외부(메모리 맵)에 마련해 둔 하드웨어 제어판입니다.
 * 동작 흐름: CPU가 Core Register를 이용해 계산하고 명령을 내려 SFR의 값을 바꾸면, 그에 따라 핀의 물리적 상태가 변합니다.
 
+#### 오실로스코프로 측정한 결과
+<p align="center">
+  <img src="./img/Pin5_asc.JPG" width="50%">
+  <img src="./img/Pin5_desc.JPG" width="50%">
+</p>
+
 ---
 
 ## 🎬 상황 설정: "지금 당장 불을 켜라!" (LED 제어 명령)
