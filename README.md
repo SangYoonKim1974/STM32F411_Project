@@ -28,8 +28,24 @@
 ## Hardware
 ---
 ![이미지추가](img/슬라이드1.PNG)<br> "블록도"
-![QR생성](img/githubURLSangYoonKim1974.png)<br> "QR코드"
+```c
+#include <stdio.h>
 
+  /* USER CODE BEGIN WHILE */
+  while (1)
+  {
+	  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, 1);
+	  HAL_Delay(500);
+	  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, 0);
+	  HAL_Delay(500);
+    /* USER CODE END WHILE */
+
+    /* USER CODE BEGIN 3 */
+  }
+  /* USER CODE END 3 */
+ ``` 
 ## Software
 ---
+
+## GPIO
 
