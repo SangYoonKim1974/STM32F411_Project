@@ -42,20 +42,20 @@
 #### 1.	Add Watch Expression 을 통해서 "GPIOA"을 추가한다.
 ```
 	설정값을 변경하여 테스트를 진행하도록 합니다.
-    조건 : 소스코드
+   1. 조건 : 소스코드
 	  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, 1);
 	  HAL_Delay(1000);
 	  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, 0);
 	  HAL_Delay(1000);
 	으로 변경한 이후
 
-    Add Watch Expression 을 통해서
-    Expression             ...           Value      
+   2. Add Watch Expression 을 통해서
+    Expression           ...            Value      
        GPIOA
           MODER                         0xa80010a0
                           ...
-          ODR             ...           40 [LED On 조건], 0 [LED off 조건] 
-                          ...          
+   3.       ODR             ...           40 [ On 조건]  
+   4.       ODR             ...            0 [ off 조건]
 ```
 ### Port A설정
 ![On](./img/STM32F411_GPIOA_setting_01.png)
