@@ -57,10 +57,19 @@
           ODR             ...           40 [LED On 조건], 0 [LED off 조건] 
                           ...          
 ```
-#### 오실로스코프 결과 보기
-| **LED On 결과** | **LED Off 결과** |
-| :---: | :---: |
-| ![LED On](./img/Pin6_asc_01.JPG) | ![LED Off](./img/Pin6_desc_01.JPG) |
+### Port A설정
+![On](./img/STM32F11IDE_PIN_6_setting.png.JPG)
+
+### PIN 6 설정
+![On](./img/STM32F11IDE_PIN_6_setting.png)
+
+### PIN 6 on 설정
+![On](./img/PIN6_on_setting_01.png)
+
+### PIN 6 off 설정
+![On](./img/PIN6_off_setting_01.png)
+
+
 
 
 
