@@ -4,8 +4,8 @@
 
 | 핀 | 포트 | 기능 | AF |
 |----|------|------|----|
-| **ECHO1** | **PA1** | GPIO_Input | AF2 (TIM3) |
-| **TRIGER1** | **PA0** | GPIO Output Push-Pull | — |
+| **ECHO1** | **PA1** | GPIO_Input | TIM1 |
+| **TRIGER1** | **PA0** | GPIO Output | — |
 
 ### HC-SR04 연결
 
@@ -29,7 +29,7 @@ HSI 16MHz → PLL x16 → SYSCLK 84MHz
   
 ```
 
-![Clock configuration]<img src="./../img/STM32F411_CUBEMX_Clock_configuration.JPG" width="50%"><br>"Clock configuration"
+<img src="./../img/STM32F411_CUBEMX_Clock_configuration.JPG" width="50%"><br> **"Clock configuration"**
 
 ### TIM1 설정 (CubeMX)
 
