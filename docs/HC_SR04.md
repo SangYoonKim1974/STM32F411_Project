@@ -1,15 +1,11 @@
 # HC-SR04 초음파 거리 센서
 ---
-## 1. 하드웨어 구성
+## 1. 하드웨어 구성(CUBEMX)
 
 | 핀 | 포트 | 기능 | AF |
 |----|------|------|----|
-| **ECHO1** | **PA1** | TIM3_CH3 (Input Capture) | AF2 (TIM3) |
+| **ECHO1** | **PA1** | GPIO_Input | AF2 (TIM3) |
 | **TRIGER1** | **PA0** | GPIO Output Push-Pull | — |
-| USART2 TX | PA2 | printf 출력 | AF1 (USART2) |
-| USART2 RX | PA3 | — | AF1 (USART2) |
-| LD2 | PA5 | GPIO Output | — |
-| B1 (USER) | PC13 | EXTI (버튼) | — |
 
 ### HC-SR04 연결
 
