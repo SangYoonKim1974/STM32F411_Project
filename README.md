@@ -58,10 +58,10 @@
                           ...          
 ```
 ### Port A설정
-![On](./img/STM32F11IDE_PIN_6_setting.png)
+![On](./img/STM32F411_GPIOA_setting_01.png)
 
 ### PIN 6 설정
-![On](./img/STM32F11IDE_PIN_6_setting.png)
+![On](./img/GPIOA_PIN6_setting_01.png)
 
 ### PIN 6 on 설정
 ![On](./img/PIN6_on_setting_01.png)
