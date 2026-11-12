@@ -54,5 +54,5 @@ HSI 16MHz → PLL x16 → SYSCLK 84MHz
 > `NVIC TIM3_IRQn`은 **인터럽트 자체를 CPU로 라우팅**하는 게이트 역할.
 > CubeMX에서는 NVIC Settings 탭에서만 설정 가능하며, `USER CODE`에서는 불가능.
 
-
+[⬅️ 메인 README.md로 돌아가기](../README.md)
 
