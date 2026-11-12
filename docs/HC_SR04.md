@@ -1,26 +1,22 @@
 # HC-SR04 초음파 거리 센서
 ---
-## 1. 하드웨어 구성
+## 1. 하드웨어 구성(CUBEMX)
 
 | 핀 | 포트 | 기능 | AF |
 |----|------|------|----|
-| **ECHO** | **PB0** | TIM3_CH3 (Input Capture) | AF2 (TIM3) |
-| **TRIG** | **PC7** | GPIO Output Push-Pull | — |
-| USART2 TX | PA2 | printf 출력 | AF1 (USART2) |
-| USART2 RX | PA3 | — | AF1 (USART2) |
-| LD2 | PA5 | GPIO Output | — |
-| B1 (USER) | PC13 | EXTI (버튼) | — |
+| **ECHO1** | **PA1** | GPIO_Input | TIM1 |
+| **TRIGER1** | **PA0** | GPIO Output | — |
 
 ### HC-SR04 연결
 
 ```
 STM32F411                    HC-SR04
-  PC7  ───────────────────── TRIG
-  PB0  ───────────────────── ECHO
-  VCC  ───────────────────── VCC (5V)
+  PA0  ───────────────────── TRIG
+  PA1  ───────────────────── ECHO
+  VCC  ───────────────────── VCC (3.3V)
   GND  ───────────────────── GND
 ```
-
+<img src="./../img/STM32F411_CUBEMX_Clock_configuration.JPG" width="50%"><br> **"Clock configuration"**
 > ⚠ PB0는 5V 내성이 있으므로 HC-SR04의 5V ECHO 출력을 직접 연결 가능.
 
 ## 2. 시스템 클럭 구성(CUBEMX)
@@ -33,7 +29,7 @@ HSI 16MHz → PLL x16 → SYSCLK 84MHz
   
 ```
 
-![clockConfiguration](011.png) <img src="010.png" width="50%">
+<img src="./../img/STM32F411_CUBEMX_Clock_configuration.JPG" width="50%"><br> **"Clock configuration"**
 
 ### TIM1 설정 (CubeMX)
 
@@ -54,5 +50,5 @@ HSI 16MHz → PLL x16 → SYSCLK 84MHz
 > `NVIC TIM3_IRQn`은 **인터럽트 자체를 CPU로 라우팅**하는 게이트 역할.
 > CubeMX에서는 NVIC Settings 탭에서만 설정 가능하며, `USER CODE`에서는 불가능.
 
-
+[⬅️ 메인 README.md로 돌아가기](../README.md)
 
