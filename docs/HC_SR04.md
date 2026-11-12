@@ -33,7 +33,8 @@ HSI 16MHz → PLL x16 → SYSCLK 84MHz
   
 ```
 
-![clockConfiguration](011.png) <img src="./../img/" width="50%">
+![clockConfiguration](011.png) <img src="./../img/STM32F411_CUBEMX_Clock_configuration.JPG" width="50%">
+
 
 ### TIM1 설정 (CubeMX)
 
