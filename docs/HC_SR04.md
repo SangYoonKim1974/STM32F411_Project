@@ -16,7 +16,7 @@ STM32F411                    HC-SR04
   VCC  ───────────────────── VCC (3.3V)
   GND  ───────────────────── GND
 ```
-
+<img src="./../img/STM32F411_CUBEMX_Clock_configuration.JPG" width="50%"><br> **"Clock configuration"**
 > ⚠ PB0는 5V 내성이 있으므로 HC-SR04의 5V ECHO 출력을 직접 연결 가능.
 
 ## 2. 시스템 클럭 구성(CUBEMX)
