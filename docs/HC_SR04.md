@@ -4,8 +4,8 @@
 
 | 핀 | 포트 | 기능 | AF |
 |----|------|------|----|
-| **ECHO** | **PB0** | TIM3_CH3 (Input Capture) | AF2 (TIM3) |
-| **TRIG** | **PC7** | GPIO Output Push-Pull | — |
+| **ECHO1** | **PA1** | TIM3_CH3 (Input Capture) | AF2 (TIM3) |
+| **TRIGER1** | **PA0** | GPIO Output Push-Pull | — |
 | USART2 TX | PA2 | printf 출력 | AF1 (USART2) |
 | USART2 RX | PA3 | — | AF1 (USART2) |
 | LD2 | PA5 | GPIO Output | — |
