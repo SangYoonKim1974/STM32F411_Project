@@ -58,7 +58,7 @@
                           ...          
 ```
 ### Port A설정
-![On](./img/STM32F11IDE_PIN_6_setting.png.JPG)
+![On](./img/STM32F11IDE_PIN_6_setting.png)
 
 ### PIN 6 설정
 ![On](./img/STM32F11IDE_PIN_6_setting.png)
