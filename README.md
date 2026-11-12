@@ -69,6 +69,8 @@
 ### PIN 6 off 설정
 ![On](./img/PIN6_off_setting_01.png)
 
+# HC_SR04
+- [1. HC_SR04](./docs/HC_SR04.md)
 
 
 
