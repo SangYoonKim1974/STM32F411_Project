@@ -21,7 +21,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include <stdio.h>
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -31,7 +31,10 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-
+#define HIGH 1
+#define LOW 0
+long unsigned int echo_time;
+int dist;
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -51,15 +54,71 @@ UART_HandleTypeDef huart2;
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
-static void MX_TIM1_Init(void);
 static void MX_USART2_UART_Init(void);
+static void MX_TIM1_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+#ifdef __GNUC__
+/* With GCC, small printf (option LD Linker->Libraries->Small printf
+   set to 'Yes') calls __io_putchar() */
+#define PUTCHAR_PROTOTYPE int __io_putchar(int ch)
+#else
+#define PUTCHAR_PROTOTYPE int fputc(int ch, FILE *f)
+#endif /* __GNUC__ */
 
+/**
+  * @brief  Retargets the C library printf function to the USART.
+  * @param  None
+  * @retval None
+  */
+PUTCHAR_PROTOTYPE
+{
+  /* Place your implementation of fputc here */
+  /* e.g. write a character to the USART1 and Loop until the end of transmission */
+  if (ch == '\n')
+    HAL_UART_Transmit (&huart2, (uint8_t*) "\r", 1, 0xFFFF);
+  HAL_UART_Transmit (&huart2, (uint8_t*) &ch, 1, 0xFFFF);
+
+  return ch;
+}
+
+void timer_start(void)
+{
+   HAL_TIM_Base_Start(&htim1);
+}
+
+void delay_us(uint16_t us)
+{
+   __HAL_TIM_SET_COUNTER(&htim1, 0); // initislize counter to start from 0
+   while((__HAL_TIM_GET_COUNTER(&htim1))<us); // wait count until us
+}
+
+void trig(void)
+{
+   HAL_GPIO_WritePin(TRIGER1_GPIO_Port, TTRIGER1_Pin, HIGH);
+   delay_us(10);
+   HAL_GPIO_WritePin(TRIGER1_GPIO_Port, TRIGER1_Pin, LOW);
+}
+
+/**
+* @brief echo 신호가 HIGH를 유지하는 시간을 (㎲)단위로 측정하여 리턴한다.
+* @param no param(void)
+*/
+long unsigned int echo(void)
+{
+   long unsigned int echo = 0;
+
+   while(HAL_GPIO_ReadPin(ECHO1_GPIO_Port, ECHO1_Pin) == LOW){}
+        __HAL_TIM_SET_COUNTER(&htim1, 0);
+        while(HAL_GPIO_ReadPin(ECHO1_GPIO_Port, ECHO1_Pin) == HIGH);
+        echo = __HAL_TIM_GET_COUNTER(&htim1);
+   if( echo >= 240 && echo <= 23000 ) return echo;
+   else return 0;
+}
 /* USER CODE END 0 */
 
 /**
@@ -91,16 +150,25 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
-  MX_TIM1_Init();
   MX_USART2_UART_Init();
+  MX_TIM1_Init();
   /* USER CODE BEGIN 2 */
-
+  timer_start();
+  printf("Ranging with HC-SR04\n");
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+	  trig();
+	      echo_time = echo();
+	      if( echo_time != 0){
+	          dist = (int)(17 * echo_time / 100);
+	          printf("Distance = %d(mm)\n", dist);
+	      }
+	      else printf("Out of Range!\n");
+	      HAL_Delay(200);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -252,7 +320,7 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOA, TRIGER1_Pin|LD2_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin : B1_Pin */
   GPIO_InitStruct.Pin = B1_Pin;
@@ -260,12 +328,18 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(B1_GPIO_Port, &GPIO_InitStruct);
 
-  /*Configure GPIO pin : LD2_Pin */
-  GPIO_InitStruct.Pin = LD2_Pin;
+  /*Configure GPIO pins : TRIGER1_Pin LD2_Pin */
+  GPIO_InitStruct.Pin = TRIGER1_Pin|LD2_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(LD2_GPIO_Port, &GPIO_InitStruct);
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : ECHO1_Pin */
+  GPIO_InitStruct.Pin = ECHO1_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(ECHO1_GPIO_Port, &GPIO_InitStruct);
 
   /* USER CODE BEGIN MX_GPIO_Init_2 */
 
