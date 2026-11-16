@@ -109,6 +109,174 @@ PC와 STM32F411 자료형 크기 비교
 
 ## Software
 
+'''C
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
 
+int main(void)
+{
+
+    int age;
+    double height;
+
+    printf("Please input your age and height:");
+    scanf_s("%d%lf", &age, &height);
+    printf("Your age :%d and height:%.1lfcm", age,height);
+
+    return 0;
+
+}
+
+'''C
+#include <stdio.h>
+#include <windows.h>
+
+#define HIGH 1
+#define LOW 0
+
+long unsigned int echo(void)
+{
+    long unsigned int echo_val = 0;
+    unsigned char HAL_GPIO_ReadPin = 0;
+    unsigned int TIM_COUNTER = 0;
+
+    while (HAL_GPIO_ReadPin == LOW) {}   /* 1) 상승(HIGH) 대기 */
+    TIM_COUNTER = 0;                        /* 2) 카운터 0 */
+    while (HAL_GPIO_ReadPin == HIGH) {    /* 3) 하강(LOW)까지 카운트 */
+        TIM_COUNTER++;
+    }
+    echo_val = TIM_COUNTER;                 /* 4) HIGH 유지 시간(us) */
+
+    if (echo_val >= 240 && echo_val <= 23000) return echo_val;
+    return 0;
+}
+int main(void)
+{
+    while (1)
+    {
+        echo();    
+    //    Sleep(1000);
+    }
+
+}
+'''
+
+'''C
+#include <stdio.h>
+
+int main(void)
+{
+    int a, b;
+    int sum, sub, mul, inv;
+
+    a = 10;
+    b = 20;
+    sum = a + b;
+    sub = a - b;
+    mul = a * b;
+    inv = -a;
+
+    printf("a :%d, b=%d\n", a, b);
+    printf("sum :%d\n", sum);
+    printf("sub :%d\n", sub);
+    printf("mul :%d\n", mul);
+    printf("inv :%d\n", inv);
+
+    return 0;
+}
+'''
+
+'''verilog
+
+module calc (
+    input  signed [31:0] a,
+    input  signed [31:0] b,
+    output signed [31:0] sum,
+    output signed [31:0] sub,
+    output signed [31:0] mul,
+    output signed [31:0] inv
+);
+    assign sum = a + b;
+    assign sub = a - b;
+    assign mul = a * b;   // 32비트 연산 (C int와 동일, 넘치면 wrap)
+    assign inv = -a;
+endmodule
+'''
+
+''' verilog
+module five_input_logic (
+    input  wire [3:0] in0,
+    input  wire [3:0] in1,
+    input  wire [3:0] in2,
+    input  wire [3:0] in3,
+    input  wire [3:0] in4,
+    output reg  [3:0] maxv
+);
+    integer i;
+    reg [3:0] in_arr [0:4];
+
+    always @(*) begin
+        in_arr[0] = in0;
+        in_arr[1] = in1;
+        in_arr[2] = in2;
+        in_arr[3] = in3;
+        in_arr[4] = in4;
+
+        maxv = in_arr[0];
+        for (i = 1; i < 5; i = i + 1) begin
+            if (in_arr[i] > maxv)
+                maxv = in_arr[i];
+        end
+    end
+endmodule
+
+====================================
+IF Resources
+====================================
+Other : Greater Than 4 / Multiplexer 4
+I/O Ports : Inputs 5 / Outputs 1
+Total : Cells 8 / Total Wires 19
+Comb. Depth 8
+
+====================================
+SWITCH CASE Resources
+====================================
+Logic Gates : NOT 1
+Other : Equality 5 / Multiplexer : 1
+I/O Ports : Inputs 5 / Outputs 2
+Total Cells 7 / Total Wires13
+Comb. Depth2
+
+<img src="./../img/if.png" width="60%"> <br>
+'''
+
+'''C
+module five_input_logic (
+    input  wire [3:0] in0,
+    input  wire [3:0] in1,
+    input  wire [3:0] in2,
+    input  wire [3:0] in3,
+    input  wire [3:0] in4,
+    output reg  [4:0] result_if,
+    output reg  [4:0] result_case
+);
+
+    // ---- case 문 사용 (5개 입력 조합 디코딩) ----
+    always @(*) begin
+        case ({in0[0], in1[0], in2[0], in3[0], in4[0]})
+            5'b00000: result_case = 5'd0;
+            5'b00001: result_case = 5'd1;
+            5'b00010: result_case = 5'd2;
+            5'b00100: result_case = 5'd4;
+            5'b01000: result_case = 5'd8;
+            5'b10000: result_case = 5'd16;
+            default : result_case = 5'd31; // 그 외 조합
+        endcase
+    end
+
+endmodule
+
+<img src="./../img/case.png" width="60%"> <br>
+'''
 
 [⬅️ 메인 README.md로 돌아가기](../README.md)
