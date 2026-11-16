@@ -280,5 +280,106 @@ endmodule
 
 <img src="./../img/case.png" width="60%"> <br>
 ```
+##### 라이징 에지 검출 / 폴링 에지 검출 코드를 c 로 작성하시오.
+
+###### for문
+```c
+#include <stdio.h>
+#include <windows.h>
+
+#define HIGH 1
+#define LOW 0
+
+int main(void)
+{
+// 테스트를 위한 임의의 신호 흐름 (0 -> 0 -> 1 -> 1 -> 1 -> 0 -> 0)
+int signal[] = { LOW, LOW, HIGH, HIGH, HIGH, LOW, LOW };
+int length = sizeof(signal) / sizeof(signal[0]);
+
+int prev_state = LOW; // 이전 신호 상태 (초기값 LOW)
+int curr_state = LOW; // 현재 신호 상태
+
+for (int i = 0; i < length; i++) {
+curr_state = signal[i]; // 새로운 신호 입력
+
+// Rising Edge condition : LOW -> HIGH
+if (prev_state == LOW && curr_state == HIGH) {
+printf("[%d] Rising Edge !\n", i);
+}
+// Falling Edge condition : HIGH -> LOW
+else if (prev_state == HIGH && curr_state == LOW) {
+printf("[%d] Falling Edge !\n", i);
+}
+// 상태 변화가 없을 때 (LOW -> LOW 또는 HIGH -> HIGH)
+else {
+printf("[%d] Echo Time !\n", i);
+}
+
+// 다음 검사를 위해 현재 상태를 이전 상태로 저장
+prev_state = curr_state;
+
+Sleep(500); // 0.5초 대기
+}
+
+return 0;
+}
+
+```
+
+###### while 문
+```c
+#include <stdio.h>
+#include <windows.h>
+
+#define HIGH 1
+#define LOW 0
+
+//가상의 핀 입력 함수
+int read_pin(int step) {
+	int pulse_signal[] = {LOW, LOW, HIGH, HIGH, HIGH, LOW, LOW};
+	return pulse_signal[step];
+}
+
+int main(void)
+{
+	int step = 0;
+	int prev_state = LOW;
+	int curr_state = LOW;
+	
+	// 1. Rising Edge 검출(LOW -> HIGH)
+	// 현재 상태가 LOW인 동안은 계속 대기(Echo Time)하며 루프 반복
+	while(curr_state == LOW) {
+		printf("Echo Time! (LOW status) \n");
+		Sleep(300);
+		
+		prev_state = curr_state;
+		curr_state = read_pin(step++); /새로운 신호 읽기
+	}
+	
+	// while 문을 빠져나왔다는 것은 curr_state가 HIGH로 변했다는 의미
+	if(prev_state == LOW && curr_state == HIGH) {
+		printf("Rising Edge! (LOW -> HIGH)\n");
+	}
+	
+	// 2. Falling Edge 검출 ( HIGH -> LOW)
+	// 현재 상태가 HIGH인 동안은 계속 대기(Echo Time)하며 루브 반복
+	while(curr_state == HIGH) {
+		printf("Echo Time! (HIGH pulse status)\n");
+		Sleep(300);
+		
+		prev_state = curr_state;
+		curr_state = read_pin(step++); // 새로운 신호 읽기
+	}
+	
+	//while문을 빠져나왔다는 것은 curr_state가 LOW로 변했다는 의미
+	if(prev_state == HIGH && curr_state == LOW) {
+		printf("Falling Edge! (HIGH -> LOW)\n");
+	}
+	
+	return 0;
+	
+}
+
+```
 
 [⬅️ 메인 README.md로 돌아가기](../README.md)
