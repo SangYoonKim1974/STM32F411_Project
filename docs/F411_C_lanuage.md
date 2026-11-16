@@ -248,9 +248,8 @@ Other : Equality 5 / Multiplexer : 1
 I/O Ports : Inputs 5 / Outputs 2
 Total Cells 7 / Total Wires13
 Comb. Depth2
-
-<img src="./../img/if.png" width="60%"> <br>
 ```
+<img src="./../img/if.png" width="60%"> <br>
 
 ```C
 module five_input_logic (
@@ -278,8 +277,9 @@ module five_input_logic (
 
 endmodule
 
-<img src="./../img/case.png" width="60%"> <br>
 ```
+<img src="./../img/case.png" width="60%"> <br>
+
 ##### 라이징 에지 검출 / 폴링 에지 검출 코드를 c 로 작성하시오.
 
 ###### for문
