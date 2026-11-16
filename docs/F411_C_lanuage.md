@@ -109,8 +109,7 @@ PC와 STM32F411 자료형 크기 비교
 
 ## Software
 
-'''c
-
+```c
 #define _CRT_SECURE_NO_WARNINGS
 #include <stdio.h>
 
@@ -128,8 +127,7 @@ int main(void)
 
 }
 
-'''c
-
+```c
 #include <stdio.h>
 #include <windows.h>
 
@@ -161,9 +159,9 @@ int main(void)
     }
 
 }
-'''
+```
 
-'''c
+```c
 
 #include <stdio.h>
 
@@ -187,9 +185,9 @@ int main(void)
 
     return 0;
 }
-'''
+```
 
-'''c
+```c
 
 module calc (
     input  signed [31:0] a,
@@ -204,9 +202,9 @@ module calc (
     assign mul = a * b;   // 32비트 연산 (C int와 동일, 넘치면 wrap)
     assign inv = -a;
 endmodule
-'''
+```
 
-'''c
+```c
 
 module five_input_logic (
     input  wire [3:0] in0,
@@ -252,9 +250,9 @@ Total Cells 7 / Total Wires13
 Comb. Depth2
 
 <img src="./../img/if.png" width="60%"> <br>
-'''
+```
 
-'''C
+```C
 module five_input_logic (
     input  wire [3:0] in0,
     input  wire [3:0] in1,
@@ -281,6 +279,6 @@ module five_input_logic (
 endmodule
 
 <img src="./../img/case.png" width="60%"> <br>
-'''
+```
 
 [⬅️ 메인 README.md로 돌아가기](../README.md)
