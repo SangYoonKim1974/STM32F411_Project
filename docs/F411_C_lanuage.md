@@ -109,7 +109,8 @@ PC와 STM32F411 자료형 크기 비교
 
 ## Software
 
-'''C
+'''c
+
 #define _CRT_SECURE_NO_WARNINGS
 #include <stdio.h>
 
@@ -127,7 +128,8 @@ int main(void)
 
 }
 
-'''C
+'''c
+
 #include <stdio.h>
 #include <windows.h>
 
@@ -161,7 +163,8 @@ int main(void)
 }
 '''
 
-'''C
+'''c
+
 #include <stdio.h>
 
 int main(void)
@@ -186,7 +189,7 @@ int main(void)
 }
 '''
 
-'''verilog
+'''c
 
 module calc (
     input  signed [31:0] a,
@@ -203,7 +206,8 @@ module calc (
 endmodule
 '''
 
-''' verilog
+'''c
+
 module five_input_logic (
     input  wire [3:0] in0,
     input  wire [3:0] in1,
