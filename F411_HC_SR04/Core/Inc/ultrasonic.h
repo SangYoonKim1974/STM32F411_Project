@@ -6,6 +6,7 @@ extern "C" {
 #endif
 
 #include <stdint.h>
+#include "stm32f4xx_hal.h"
 
 typedef struct
 {
@@ -16,9 +17,15 @@ typedef struct
   uint8_t valid;
 } Ultrasonic_Result;
 
+extern volatile uint16_t g_trace_echo_ticks;
+extern volatile uint8_t g_trace_echo_edge;
+extern volatile uint8_t g_trace_echo_state;
+extern volatile uint32_t g_trace_edge_count;
+
 void Ultrasonic_Init(void);
 void Ultrasonic_Task(void);
 uint8_t Ultrasonic_GetResult(Ultrasonic_Result *result);
+uint16_t Ultrasonic_GetLastEchoTicks(void);
 uint8_t Ultrasonic_IsIdle(void);
 void Ultrasonic_SetSoundSpeedX10(uint16_t speed_x10);
 void Ultrasonic_OnEchoEdge(void);

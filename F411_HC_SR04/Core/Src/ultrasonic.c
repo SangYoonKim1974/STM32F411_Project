@@ -1,17 +1,15 @@
 #include "ultrasonic.h"
 #include "main.h"
 
-#define US_TRIG_PORT GPIOA
-#define US_TRIG_PIN GPIO_PIN_1
-#define US_ECHO_PORT GPIOA
-#define US_ECHO_PIN GPIO_PIN_0
+extern TIM_HandleTypeDef htim1;
 
 #define US_SAMPLE_PERIOD_MS 200U
 #define US_PUBLISH_PERIOD_MS 1000U
 #define US_ECHO_TIMEOUT_MS 35U
 #define US_TRIG_PULSE_US 10U
-#define US_MIN_PULSE_US 100U
-#define US_MAX_PULSE_US 30000U
+#define US_TIMER_TICKS_PER_US 1U
+#define US_MIN_ECHO_TICKS (100U * US_TIMER_TICKS_PER_US)
+#define US_MAX_ECHO_TICKS (30000U * US_TIMER_TICKS_PER_US)
 #define US_MIN_DISTANCE_MM 20U
 #define US_MAX_DISTANCE_MM 4000U
 #define US_FILTER_SIZE 5U
@@ -20,19 +18,23 @@
 #define US_MIN_SOUND_SPEED_X10 2500U
 #define US_MAX_SOUND_SPEED_X10 4000U
 
+#define US_TIMER_TICKS_PER_US 1U
+#define US_MIN_ECHO_TICKS (100U * US_TIMER_TICKS_PER_US)
+#define US_MAX_ECHO_TICKS (30000U * US_TIMER_TICKS_PER_US)
+
 typedef enum
 {
   US_STATE_IDLE = 0,
   US_STATE_WAIT_ECHO
 } Ultrasonic_State;
 
-static TIM_HandleTypeDef s_tim1;
+static TIM_HandleTypeDef *s_htim;
 static volatile Ultrasonic_State s_state;
 static uint32_t s_lastSampleTick;
 static uint32_t s_lastPublishTick;
-static uint32_t s_echoStartUs;
 static uint32_t s_echoStartTick;
-static volatile uint32_t s_echoWidthUs;
+static uint16_t s_echoStartCnt;
+static volatile uint16_t s_echoWidthTicks;
 static volatile uint8_t s_echoRising;
 static volatile uint8_t s_echoDone;
 static uint16_t s_samplesRef[US_FILTER_SIZE];
@@ -44,55 +46,32 @@ static uint16_t s_soundSpeedX10;
 static Ultrasonic_Result s_result;
 static volatile uint8_t s_resultReady;
 
-static void US_StoreSample(uint32_t width_us);
+static uint16_t US_GetCounter(void);
+static void US_StoreSample(uint32_t width_ticks);
 static uint16_t US_Median(const uint16_t *samples);
 static void US_Publish(uint32_t now);
 
+static uint16_t US_GetCounter(void)
+{
+  return (uint16_t)__HAL_TIM_GET_COUNTER(s_htim);
+}
+
 void Ultrasonic_Init(void)
 {
-  GPIO_InitTypeDef gpio = {0};
+  s_htim = &htim1;
+  HAL_GPIO_WritePin(TRIG_GPIO_Port, TRIG_Pin, GPIO_PIN_RESET);
 
-  __HAL_RCC_GPIOA_CLK_ENABLE();
-  __HAL_RCC_SYSCFG_CLK_ENABLE();
-  __HAL_RCC_TIM1_CLK_ENABLE();
-
-  HAL_GPIO_WritePin(US_TRIG_PORT, US_TRIG_PIN, GPIO_PIN_RESET);
-  gpio.Pin = US_TRIG_PIN;
-  gpio.Mode = GPIO_MODE_OUTPUT_PP;
-  gpio.Pull = GPIO_NOPULL;
-  gpio.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(US_TRIG_PORT, &gpio);
-
-  gpio.Pin = US_ECHO_PIN;
-  gpio.Mode = GPIO_MODE_IT_RISING_FALLING;
-  gpio.Pull = GPIO_NOPULL;
-  HAL_GPIO_Init(US_ECHO_PORT, &gpio);
-
-  s_tim1.Instance = TIM1;
-  s_tim1.Init.Prescaler = 83U;
-  s_tim1.Init.CounterMode = TIM_COUNTERMODE_UP;
-  s_tim1.Init.Period = 0xFFFFFFFFU;
-  s_tim1.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
-  s_tim1.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
-  if (HAL_TIM_Base_Init(&s_tim1) != HAL_OK)
+  if (HAL_TIM_Base_Start(s_htim) != HAL_OK)
   {
     Error_Handler();
   }
-  __HAL_TIM_SET_COUNTER(&s_tim1, 0U);
-  if (HAL_TIM_Base_Start(&s_tim1) != HAL_OK)
-  {
-    Error_Handler();
-  }
-
-  HAL_NVIC_SetPriority(EXTI0_IRQn, 5U, 0U);
-  HAL_NVIC_EnableIRQ(EXTI0_IRQn);
 
   s_state = US_STATE_IDLE;
   s_lastSampleTick = HAL_GetTick();
   s_lastPublishTick = s_lastSampleTick;
-  s_echoStartUs = 0U;
   s_echoStartTick = 0U;
-  s_echoWidthUs = 0U;
+  s_echoStartCnt = 0U;
+  s_echoWidthTicks = 0U;
   s_echoRising = 0U;
   s_echoDone = 0U;
   s_sampleCount = 0U;
@@ -109,25 +88,31 @@ void Ultrasonic_Init(void)
 
 void Ultrasonic_Task(void)
 {
-  uint32_t now = HAL_GetTick();
+  uint32_t now;
+  uint16_t trigStartCnt;
+
+  if (s_htim == NULL)
+  {
+    return;
+  }
+
+  now = HAL_GetTick();
 
   switch (s_state)
   {
     case US_STATE_IDLE:
       if ((now - s_lastSampleTick) >= US_SAMPLE_PERIOD_MS)
       {
-        uint32_t trigStartUs;
-
         s_lastSampleTick = now;
         s_echoRising = 0U;
         s_echoDone = 0U;
 
-        trigStartUs = __HAL_TIM_GET_COUNTER(&s_tim1);
-        HAL_GPIO_WritePin(US_TRIG_PORT, US_TRIG_PIN, GPIO_PIN_SET);
-        while ((__HAL_TIM_GET_COUNTER(&s_tim1) - trigStartUs) < US_TRIG_PULSE_US)
+        trigStartCnt = US_GetCounter();
+        HAL_GPIO_WritePin(TRIG_GPIO_Port, TRIG_Pin, GPIO_PIN_SET);
+        while ((uint16_t)(US_GetCounter() - trigStartCnt) < US_TRIG_PULSE_US)
         {
         }
-        HAL_GPIO_WritePin(US_TRIG_PORT, US_TRIG_PIN, GPIO_PIN_RESET);
+        HAL_GPIO_WritePin(TRIG_GPIO_Port, TRIG_Pin, GPIO_PIN_RESET);
 
         s_echoStartTick = now;
         s_state = US_STATE_WAIT_ECHO;
@@ -139,7 +124,7 @@ void Ultrasonic_Task(void)
       {
         if (s_echoDone == 1U)
         {
-          US_StoreSample(s_echoWidthUs);
+          US_StoreSample(s_echoWidthTicks);
         }
         else
         {
@@ -192,26 +177,38 @@ void Ultrasonic_SetSoundSpeedX10(uint16_t speed_x10)
   }
 }
 
+uint16_t Ultrasonic_GetLastEchoTicks(void)
+{
+  return s_echoWidthTicks;
+}
+
 void Ultrasonic_OnEchoEdge(void)
 {
-  uint32_t now = __HAL_TIM_GET_COUNTER(&s_tim1);
+  uint16_t now;
+  uint16_t width;
 
-  if (HAL_GPIO_ReadPin(US_ECHO_PORT, US_ECHO_PIN) == GPIO_PIN_SET)
+  if (s_htim == NULL)
   {
-    if (s_state == US_STATE_WAIT_ECHO)
+    return;
+  }
+
+  now = US_GetCounter();
+
+  if (HAL_GPIO_ReadPin(ECHO_GPIO_Port, ECHO_Pin) == GPIO_PIN_SET)
+  {
+    if ((s_state == US_STATE_WAIT_ECHO) && (s_echoRising == 0U))
     {
-      s_echoStartUs = now;
+      s_echoStartCnt = now;
       s_echoRising = 1U;
     }
   }
   else if (s_echoRising != 0U)
   {
-    uint32_t width = now - s_echoStartUs;
-
+    width = (uint16_t)(now - s_echoStartCnt);
     s_echoRising = 0U;
-    s_echoWidthUs = width;
+    s_echoWidthTicks = width;
 
-    if ((width >= US_MIN_PULSE_US) && (width <= US_MAX_PULSE_US))
+    if ((width >= US_MIN_ECHO_TICKS) && (width <= US_MAX_ECHO_TICKS))
     {
       s_echoDone = 1U;
     }
@@ -222,8 +219,9 @@ void Ultrasonic_OnEchoEdge(void)
   }
 }
 
-static void US_StoreSample(uint32_t width_us)
+static void US_StoreSample(uint32_t width_ticks)
 {
+  uint32_t width_us = width_ticks / US_TIMER_TICKS_PER_US;
   uint32_t distance_ref_mm = (width_us * US_REFERENCE_SOUND_SPEED_X10) / 20000U;
   uint32_t distance_mm = (width_us * s_soundSpeedX10) / 20000U;
 
@@ -254,7 +252,7 @@ static uint16_t US_Median(const uint16_t *samples)
     sorted[i] = samples[i];
   }
 
-  for (i = 0U; i + 1U < s_sampleCount; i++)
+  for (i = 0U; (uint8_t)(i + 1U) < s_sampleCount; i++)
   {
     for (j = (uint8_t)(i + 1U); j < s_sampleCount; j++)
     {
