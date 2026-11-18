@@ -77,6 +77,9 @@
 - [1. C language](./docs/F411_C_language.md)
 - [2. C vs Verilog HDL vs VHDL Comparison](./docs/F411_C_Verilog_HDL_VHDL.md)
 
+# TASK_LAB
+- [1. F411_TASK_LAB](./docs/F411_TASK_LAB.md)
+
 
 
 
