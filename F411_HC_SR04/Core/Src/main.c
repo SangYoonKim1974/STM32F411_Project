@@ -87,6 +87,7 @@ PUTCHAR_PROTOTYPE
   return ch;
 }
 
+<<<<<<< HEAD
 //void timer_start(void)
 //{
 //   HAL_TIM_Base_Start(&htim1);
@@ -104,11 +105,31 @@ PUTCHAR_PROTOTYPE
 //   delay_us(10);
 //   HAL_GPIO_WritePin(TRIGER1_GPIO_Port, TRIGER1_Pin, LOW);
 //}
+=======
+void timer_start(void)
+{
+   HAL_TIM_Base_Start(&htim1);
+}
+
+void delay_us(uint16_t us)
+{
+   __HAL_TIM_SET_COUNTER(&htim1, 0); // initislize counter to start from 0
+   while((__HAL_TIM_GET_COUNTER(&htim1))<us); // wait count until us
+}
+
+void trig(void)
+{
+   HAL_GPIO_WritePin(TRIGER1_GPIO_Port, TTRIGER1_Pin, HIGH);
+   delay_us(10);
+   HAL_GPIO_WritePin(TRIGER1_GPIO_Port, TRIGER1_Pin, LOW);
+}
+>>>>>>> ef8b83fd473741e83a6c907f2e8680429d9dd87d
 
 /**
 * @brief echo 신호가 HIGH를 유지하는 시간을 (㎲)단위로 측정하여 리턴한다.
 * @param no param(void)
 */
+<<<<<<< HEAD
 //long unsigned int echo(void)
 //{
 //   long unsigned int echo = 0;
@@ -156,6 +177,18 @@ static void Sensor_Task(void)
                    (unsigned long)result.errors);
    printf(line);
   }
+=======
+long unsigned int echo(void)
+{
+   long unsigned int echo = 0;
+
+   while(HAL_GPIO_ReadPin(ECHO1_GPIO_Port, ECHO1_Pin) == LOW){}
+        __HAL_TIM_SET_COUNTER(&htim1, 0);
+        while(HAL_GPIO_ReadPin(ECHO1_GPIO_Port, ECHO1_Pin) == HIGH);
+        echo = __HAL_TIM_GET_COUNTER(&htim1);
+   if( echo >= 240 && echo <= 23000 ) return echo;
+   else return 0;
+>>>>>>> ef8b83fd473741e83a6c907f2e8680429d9dd87d
 }
 /* USER CODE END 0 */
 
@@ -191,15 +224,21 @@ int main(void)
   MX_USART2_UART_Init();
   MX_TIM1_Init();
   /* USER CODE BEGIN 2 */
+<<<<<<< HEAD
   Ultrasonic_Init();
 //  timer_start();
 //  printf("Ranging with HC-SR04\n");
+=======
+  timer_start();
+  printf("Ranging with HC-SR04\n");
+>>>>>>> ef8b83fd473741e83a6c907f2e8680429d9dd87d
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+<<<<<<< HEAD
 	  Sensor_Task();// osilloscope_Trigger_Mode execute
 //	  trig();
 //	      echo_time = echo();
@@ -209,6 +248,16 @@ int main(void)
 //	      }
 //	      else printf("Out of Range!\n");
 //          HAL_Delay(200); /* 이 부분을 넣지 않으면 결과가 연속적으로 putty에서 보이지 않았음 */
+=======
+	  trig();
+	      echo_time = echo();
+	      if( echo_time != 0){
+	          dist = (int)(17 * echo_time / 100);
+	          printf("Distance = %d(mm)\n", dist);
+	      }
+	      else printf("Out of Range!\n");
+	      HAL_Delay(200);
+>>>>>>> ef8b83fd473741e83a6c907f2e8680429d9dd87d
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -368,18 +417,30 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(B1_GPIO_Port, &GPIO_InitStruct);
 
+<<<<<<< HEAD
   /*Configure GPIO pin : ECHO1_Pin */
   GPIO_InitStruct.Pin = ECHO1_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(ECHO1_GPIO_Port, &GPIO_InitStruct);
 
+=======
+>>>>>>> ef8b83fd473741e83a6c907f2e8680429d9dd87d
   /*Configure GPIO pins : TRIGER1_Pin LD2_Pin */
   GPIO_InitStruct.Pin = TRIGER1_Pin|LD2_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+<<<<<<< HEAD
+=======
+
+  /*Configure GPIO pin : ECHO1_Pin */
+  GPIO_InitStruct.Pin = ECHO1_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(ECHO1_GPIO_Port, &GPIO_InitStruct);
+>>>>>>> ef8b83fd473741e83a6c907f2e8680429d9dd87d
 
   /* USER CODE BEGIN MX_GPIO_Init_2 */
 

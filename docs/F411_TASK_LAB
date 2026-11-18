@@ -1,0 +1,170 @@
+# STEP02 - 초음파 거리 측정
+
+> 상태: **코드 구현/빌드 완료. 보드 동작 확인 완료.**
+> 센서: HC-SR04 (5 V) 기준
+> 측정: 5 Hz 샘플링, 1 Hz 중앙값 출력
+> 빌드: 0 errors, 0 warnings
+
+---
+
+## 1. 목표
+
+- HC-SR04로 거리를 측정한다.
+- "몇 초마다 정확한 데이터를 확인한다"를 **측정 가능한 숫자**로 바꾼다.
+- `HAL_Delay()` 없이 **비차단 상태 머신**으로 측정한다.
+- 타임스탬프, 오류 횟수, 필터 결과를 UART CSV로 확인한다.
+- LED 점멸은 계속 동작하게 두어 **여러 작업이 서로를 막지 않는지** 확인한다.
+
+이번 단계에서 확정한 값:
+
+| 항목 | 값 |
+|---|---|
+| 센서 | HC-SR04 |
+| TRIG | PA1 (GPIO 출력) |
+| ECHO | PA0 (EXTI 양쪽 에지) |
+| 샘플 주기 | 200 ms (5 Hz) |
+| 출력 주기 | 1000 ms (1 Hz) |
+| 필터 | 최근 5개 중앙값 |
+| 측정 타임아웃 | 35 ms |
+| 유효 펄스 | 100 ~ 30000 us |
+| 유효 거리 | 20 ~ 4000 mm |
+| 음속 | 343 m/s (20 °C 기준) |
+| 목표 정확도 | ±1 cm (0.2 ~ 2 m, 평평한 물체) |
+
+---
+
+## 2. 준비물
+
+- NUCLEO-F411RE
+- HC-SR04 초음파 센서
+- 저항 1 kΩ, 2 kΩ 각 1개
+- 점퍼선, 브레드보드
+- USB 케이블 (ST-LINK, 데이터 지원)
+- 시리얼 프로그램 (Tera Term / PuTTY / VS Code)
+- 자 또는 줄자
+
+---
+
+## 3. 배선
+
+### 3.1 HC-SR04 핀
+
+| HC-SR04 | 연결 |
+|---|---|
+| VCC | NUCLEO **5 V** |
+| GND | NUCLEO GND |
+| TRIG | PA1 |
+| ECHO | 분압 후 PA0 |
+
+### 3.2 ECHO 전압 분압
+
+HC-SR04의 ECHO는 **5 V 출력**이다. STM32 GPIO에 직접 연결하지 않는다.
+
+```text
+HC-SR04 ECHO ---- 1 kΩ ----+---- PA0
+                           |
+                          2 kΩ
+                           |
+                          GND
+```
+
+- PA0 전압: `5 V × 2 kΩ / (1 kΩ + 2 kΩ) ≈ 3.33 V`
+- GND는 센서와 보드가 **반드시 공통**이어야 한다.
+- HC-SR04는 3.3 V에서도 동작하는 것처럼 보일 수 있지만, 거리 정확도와 안정성이 떨어진다. **5 V 전원**을 사용한다.
+
+### 3.3 연결 확인
+
+- 전원을 넣기 전에 5 V와 GND가 바뀌지 않았는지 확인한다.
+- PA0에는 분압 노드만 연결한다. ECHO를 직접 PA0에 꽂지 않는다.
+- PA1은 TRIG 출력이다.
+- PA0/PA1은 NUCLEO의 Arduino 아날로그 헤더 A0/A1 위치다.
+
+---
+
+## 4. 설계
+
+### 4.1 왜 TIM2를 쓰는가
+
+HC-SR04의 ECHO 펄스 폭은 수백 us ~ 수십 ms다. `HAL_GetTick()`은 1 ms 해상도라서 정확도가 부족하다.
+
+TIM2를 1 MHz로 동작시켜 **1 tick = 1 us**로 만든다.
+
+```text
+TIM2 입력 클럭 = 84 MHz
+Prescaler = 83
+카운터 클럭 = 84 MHz / (83 + 1) = 1 MHz
+```
+
+TIM2는 32비트 카운터이므로 `0xFFFFFFFF`까지 세고 다시 0으로 돌아간다.
+펄스 폭은 `끝 시각 - 시작 시각`을 `uint32_t`로 계산하면 **한 번의 wrap까지 자동으로 처리**된다.
+(측정 최대값 30 ms는 32비트 wrap 주기 약 71분보다 훨씬 짧다.)
+
+### 4.2 왜 EXTI를 쓰는가
+
+ECHO의 상승 에지와 하강 에지 시각을 인터럽트에서 기록한다.
+
+- 상승 에지: TIM2 카운터 저장
+- 하강 에지: `현재 카운터 - 상승 에지 카운터` = 펄스 폭(us)
+
+ISR에서는 **시각 기록만** 하고, 거리 계산/필터/출력은 메인 루프에서 한다.
+ISR을 짧게 유지해야 다른 인터럽트와 LED 작업이 막히지 않는다.
+
+### 4.3 상태 머신
+
+`HAL_Delay()`로 ECHO를 기다리지 않고, 메인 루프가 자주 호출하는 `Ultrasonic_Task()` 안에서 상태를 진행한다.
+
+```text
+IDLE
+  └─ 200 ms 경과 → TRIG HIGH, 시작 시각 기록
+       └─ TRIG_HIGH
+            └─ 10 us 경과 → TRIG LOW, 타임아웃 시작
+                 └─ WAIT_ECHO
+                      ├─ ECHO 펄스 완료 → 거리 저장, IDLE
+                      └─ 35 ms 초과 → 오류 +1, IDLE
+```
+
+- `IDLE`: 다음 샘플 시간을 기다린다.
+- `TRIG_HIGH`: TRIG를 10 us 이상 유지한다.
+- `WAIT_ECHO`: ECHO 상승/하강을 기다린다. 35 ms 안에 끝나지 않으면 오류다.
+
+### 4.4 필터와 출력
+
+- 200 ms마다 1개씩 측정한다.
+- 1000 ms마다 최근 5개(없으면 있는 만큼)의 **중앙값**을 출력한다.
+- 중앙값은 단발 튐(노이즈)을 억제한다.
+- 평균은 큰 이상값에 끌리지만, 중앙값은 상대적으로 덜 끌린다.
+
+### 4.5 거리 계산
+
+20 °C 기준 음속 343 m/s:
+
+```text
+거리(mm) = 펄스폭(us) × 343 / 2000
+```
+
+- `펄스폭 × 343`은 최대 `30000 × 343 = 10,290,000`으로 `uint32_t` 범위 안이다.
+- 왕복이므로 2로 나눈다.
+- 단위를 mm로 맞추기 위해 `m/s → mm/us` 변환을 포함한 식이 위와 같다.
+
+온도 보정은 STEP03에서 구현했다.
+
+```text
+v(m/s) = 331.3 + 0.606 × T(°C)
+```
+
+---
+
+## 5. 변경된 파일
+
+| 파일 | 변경 |
+|---|---|
+| `Core/Inc/ultrasonic.h` | 새 파일. 결과 구조체와 API 선언 |
+| `Core/Src/ultrasonic.c` | 새 파일. TIM2/GPIO/EXTI 초기화, 상태 머신, 필터 |
+| `Core/Src/main.c` | `Ultrasonic_Init()`, `Sensor_Task()`, EXTI 콜백 추가 |
+| `Core/Src/stm32f4xx_it.c` | `EXTI0_IRQHandler()` 추가 |
+| `Core/Inc/stm32f4xx_hal_conf.h` | `HAL_TIM_MODULE_ENABLED` 활성화 |
+| `Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_tim.c` | TIM HAL 소스 추가 |
+| `Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_tim_ex.c` | TIM 확장 HAL 소스 추가 |
+| `Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim.h` | TIM HAL 헤더 추가 |
+| `Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim_ex.h` | TIM 확장 HAL 헤더 추가 |
+| `F411_TASK_LAB.ioc` | 변경 없음 |

@@ -60,8 +60,13 @@ all: main-build
 main-build: F411_HC_SR04.elf secondary-outputs
 
 # Tool invocations
+<<<<<<< HEAD
 F411_HC_SR04.elf F411_HC_SR04.map: $(OBJS) $(USER_OBJS) C:\Users\user\STM32F411_Project\F411_HC_SR04\STM32F411RETX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
 	arm-none-eabi-gcc -o "F411_HC_SR04.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"C:\Users\user\STM32F411_Project\F411_HC_SR04\STM32F411RETX_FLASH.ld" --specs=nosys.specs -Wl,-Map="F411_HC_SR04.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+=======
+F411_HC_SR04.elf F411_HC_SR04.map: $(OBJS) $(USER_OBJS) C:\Users\s1347\STM32F411_Project\F411_HC_SR04\STM32F411RETX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "F411_HC_SR04.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"C:\Users\s1347\STM32F411_Project\F411_HC_SR04\STM32F411RETX_FLASH.ld" --specs=nosys.specs -Wl,-Map="F411_HC_SR04.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+>>>>>>> ef8b83fd473741e83a6c907f2e8680429d9dd87d
 	@echo 'Finished building target: $@'
 	@echo ' '
 

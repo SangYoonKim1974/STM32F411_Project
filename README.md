@@ -60,6 +60,7 @@
 ### Port A설정
 ![On](./img/STM32F411_GPIOA_setting_01.png)
 
+
 ### PIN 6 설정
 ![On](./img/GPIOA_PIN6_setting_01.png)
 
@@ -70,7 +71,14 @@
 ![On](./img/PIN6_off_setting_01.png)
 
 # HC_SR04
-- [1. HC_SR04](./docs/HC_SR04.md)
+- [1. HC_SR04](./docs/F411_HC_SR04.md)
+
+# C언어 정리
+- [1. C language](./docs/F411_C_language.md)
+- [2. C vs Verilog HDL vs VHDL Comparison](./docs/F411_C_Verilog_HDL_VHDL.md)
+
+# TASK_LAB
+- [1. F411_TASK_LAB](./docs/F411_TASK_LAB.md)
 
 
 
