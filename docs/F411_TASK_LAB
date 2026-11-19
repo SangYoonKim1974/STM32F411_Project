@@ -151,7 +151,6 @@ IDLE
 ```text
 v(m/s) = 331.3 + 0.606 × T(°C)
 ```
-
 ---
 
 ## 5. 변경된 파일
@@ -168,3 +167,5 @@ v(m/s) = 331.3 + 0.606 × T(°C)
 | `Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim.h` | TIM HAL 헤더 추가 |
 | `Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim_ex.h` | TIM 확장 HAL 헤더 추가 |
 | `F411_TASK_LAB.ioc` | 변경 없음 |
+
+
